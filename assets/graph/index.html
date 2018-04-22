@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Графическое решение</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+
+    <script src="../common/js/config.js"></script>
+    <script src="../common/libs/fraction.js"></script>
+    <script src="js/algorithms/shuffle.js"></script>
+
+    <script src="js/graph/line.js"></script>
+    <script src="js/graph/graph.js"></script>
+
+    <script src="js/algorithms/gauss.js"></script>
+    <script src="js/solver.js"></script>
+    <script src="../common/libs/fileSaver.js"></script>
+    <script src="js/index.js"></script>
+
+</head>
+<body class="grey lighten-4">
+
+    <div class="absolute">
+        <div id="answer" class="row card">
+
+        </div>
+    </div>
+
+    <div class="row max">
+        <div id="main" class="row col s12 center">
+            <div class="center" style="padding: 20px;">
+                <label>Выберите базисные переменные</label>
+            </div>
+            <div id="chips" class="chips center" style="border-bottom: 0; margin: 0; min-height: 0; cursor: default">
+
+            </div>
+        </div>
+        <div id="control" class="row col s12 center">
+            <a id="next_button" class="btn-floating btn-large color">
+                <i class="large material-icons">navigate_next</i>
+            </a>
+        </div>
+    </div>
+
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large waves-effect waves-light color" id="save">
+            <i class="material-icons">save</i>
+        </a>
+    </div>
+
+</body>
+</html>

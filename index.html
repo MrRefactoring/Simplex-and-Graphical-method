@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Ввод данных</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="assets/entry/css/style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
+    <script src="assets/common/libs/editable_table.js"></script>
+    <script src="assets/common/libs/fraction.js"></script>
+
+    <script src="assets/common/js/config.js"></script>
+    <script src="assets/common/js/data.js"></script>
+    <script src="assets/common/js/painter.js"></script>
+    <script src="assets/entry/js/handlers.js"></script>
+    <script src="assets/entry/js/generators.js"></script>
+    <script src="assets/entry/js/loadFromFile.js"></script>
+    <script src="assets/entry/js/index.js"></script>
+
+</head>
+<body class="grey lighten-4">
+
+    <div class="row">
+        <div id="main" class="row">
+            <div class="col s12">
+                <div class="input-field col s6">
+                    <select id="variables"></select>
+                    <label for="variables">Выберите количество переменных</label>
+                </div>
+                <div class="input-field col s6">
+                    <select id="constraints"></select>
+                    <label for="constraints">Выберите количество ограничений</label>
+                </div>
+            </div>
+        </div>
+
+        <div id="next_field" class="row col s12 center">
+            <a id="next_button" class="btn-floating btn-large color">
+                <i class="large material-icons">navigate_next</i>
+            </a>
+        </div>
+    </div>
+
+    <div class="fixed-action-btn">
+        <div class="drag" style="display: block" id="loader">
+            <a class="btn-floating btn-large waves-effect waves-light color"><i class="material-icons">attach_file</i></a>
+            <input type="file" accept="text/plain" id="attach">
+        </div>
+    </div>
+
+</body>
+</html>
