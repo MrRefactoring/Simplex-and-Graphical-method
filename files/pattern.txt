@@ -1,4 +1,0 @@
-constraints_count variables_count
-function_array
-max_bool
-matrix

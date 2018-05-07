@@ -1,9 +1,14 @@
 {
-  "name": "Lab",
+  "name": "Линейное программирование",
   "version": "0.0.1",
   "main": "index.html",
   "window": {
+    "icon": "content/icon.png",
+    "width": 800,
+    "height": 500,
+    "min_width": 800,
+    "min_height": 500,
     "frame": true,
-    "toolbar": false
+    "toolbar": true
   }
 }
