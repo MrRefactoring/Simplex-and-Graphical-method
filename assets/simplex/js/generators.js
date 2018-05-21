@@ -88,9 +88,10 @@ function generateNewSimplexTable(simplex, pivot) {
 
     if (s.artificial)  // Если все еще искуственный базис
         s = deleteArtificial(s);
-
-    s.artificial = checkArtificial(s);  // Проверяем, все еще искусственный базис или нет
+    if (!s.recounted)  // Если пересчет не выполнен
+        s.artificial = checkArtificial(s);  // Проверяем, все еще искусственный базис или нет
     if (!s.recounted && !s.artificial){  //  Если это этап пересчета
+        console.log(s.footer[s.footer.length - 1]);  // todo Последний элемент (если он больше 0, то значит, что система несовместна)
         let functions = [];
         for (let y = 0; y < s.basic.length; y++){
             let f = {parent: s.basic[y], free: s.matrix[y][s.matrix[y].length - 1]};

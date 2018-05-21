@@ -23,3 +23,26 @@ body, html{
 .opacity{
     opacity: .54;
 }
+
+.center-margin{
+    margin: 0 auto;
+}
+
+.chip{
+    transition-property: background-color;
+    transition-duration: 1s;
+}
+
+.chips{
+    transition-property: background-color;
+    transition-duration: 1s;
+    border-bottom: none;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+}
+
+.disabled{
+    background-color: rgb(216, 216, 216);
+}

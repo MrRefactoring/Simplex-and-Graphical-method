@@ -1,18 +1,34 @@
-let __simplex = {artificial: true, solved: false, recounted: false,
-    calculate: functionCalculator, getAnswerArray: getAnswerArray};  // Тут будет храниться структура
+let __simplex = {solved: false, calculate: functionCalculator, getAnswerArray: getAnswerArray};  // Первая симплекс таблица
 
 function parse() {
-    __sizeParse();
-    __functionParse();
-    __matrixParse();
-    __footerParse();
-    __generateLabels();
+    if (localStorage.getItem('type') === 'forward'){  // Если это не метод искусственного базиса
+        __simplex.artificial = false;
+        __simplex.recounted = true;
+        __sizeParse(true);
+        __functionParse();
+        __matrixParse(true);
+        __generateLabels(true);
+        __footerParse(true);
+    } else {  // Если это метод искусственного базиса
+        __simplex.artificial = true;
+        __simplex.recounted = false;
+        __sizeParse();
+        __functionParse();
+        __matrixParse();
+        __footerParse();
+        __generateLabels();
+    }
     return __simplex;
 }
 
-function __sizeParse() {
-    __simplex.variables = parseInt(localStorage.getItem('variables'));
-    __simplex.bounds = parseInt(localStorage.getItem('bounds'))
+function __sizeParse(forward=false) {
+    if (forward){
+        __simplex.variables = parseInt(localStorage.getItem('variables')) - parseInt(localStorage.getItem('bounds'));
+        __simplex.bounds = parseInt(localStorage.getItem('bounds'))
+    } else {
+        __simplex.variables = parseInt(localStorage.getItem('variables'));
+        __simplex.bounds = parseInt(localStorage.getItem('bounds'))
+    }
 }
 
 function __functionParse() {
@@ -29,40 +45,81 @@ function __functionParse() {
     __simplex.function = f;
 }
 
-function __matrixParse() {
-    let matrix = JSON.parse(localStorage.getItem('matrix'));
-    for (let y = 0; y < matrix.length; y++){
-        for (let x = 0; x < matrix[y].length; x++){
-            if (matrix[y][matrix[y].length - 1] < 0)  // Если свободный член отрицателен
-                matrix[y][x] = Fraction(matrix[y][x]).neg();
-            else
+function __matrixParse(forward=false){
+    if (forward){
+        let matrix = JSON.parse(localStorage.getItem('matrix'));
+        let basic = JSON.parse(localStorage.getItem('forward'));
+        for (let y = 0; y < matrix.length; y++){
+            for (let x = 0; x < matrix[y].length; x++){
                 matrix[y][x] = Fraction(matrix[y][x])
+            }
         }
+        __simplex.matrix = Gauss.simplexCheck(matrix, basic)[1];
+    } else {
+        let matrix = JSON.parse(localStorage.getItem('matrix'));
+        for (let y = 0; y < matrix.length; y++){
+            for (let x = 0; x < matrix[y].length; x++){
+                if (matrix[y][matrix[y].length - 1] < 0)  // Если свободный член отрицателен
+                    matrix[y][x] = Fraction(matrix[y][x]).neg();
+                else
+                    matrix[y][x] = Fraction(matrix[y][x])
+            }
+        }
+        __simplex.matrix = matrix;
     }
-    __simplex.matrix = matrix;
 }
 
-function __footerParse(){
-    let footer = [];
-    for (let x = 0; x < __simplex.matrix[0].length; x++){
-        footer[x] = Fraction(0);
-        for (let y = 0; y < __simplex.matrix.length; y++){
-            footer[x] = footer[x].sub(__simplex.matrix[y][x])
+function __footerParse(forward=false){
+    if (forward){
+        let functions = [];
+        __simplex.footer = [];
+        for (let y = 0; y < __simplex.basic.length; y++){
+            let f = {parent: __simplex.basic[y], free: __simplex.matrix[y][__simplex.matrix[y].length - 1]};
+            for (let x = 0; x < __simplex.matrix[y].length - 1; x++){
+                f[__simplex.head[x]] = Fraction(-__simplex.matrix[y][x]);
+            }
+            functions.push(f);
         }
+        let values = __simplex.calculate(__simplex, functions);
+        for (let i = 0; i < __simplex.head.length; i++){
+            __simplex.footer[i] = values.values[__simplex.head[i] - 1]
+        }
+        __simplex.footer[__simplex.footer.length] = values.free.neg();
+    } else {
+        let footer = [];
+        for (let x = 0; x < __simplex.matrix[0].length; x++){
+            footer[x] = Fraction(0);
+            for (let y = 0; y < __simplex.matrix.length; y++){
+                footer[x] = footer[x].sub(__simplex.matrix[y][x])
+            }
+        }
+        __simplex.footer = footer
     }
-    __simplex.footer = footer
 }
 
-function __generateLabels(){
-    let head = [], basic = [];
-    for (let i = 1; i <= __simplex.variables; i++){
-        head.push(i);
+function __generateLabels(forward=false){
+    if (forward){
+        let head = [], basic = JSON.parse(localStorage.getItem('forward'));
+        for (let i = 0; i < basic.length; i++){
+            basic[i] = basic[i] + 1
+        }
+        for (let i = 1; i <= parseInt(localStorage.getItem('variables')); i++){
+            if (!basic.includes(i))
+                head.push(i)
+        }
+        __simplex.basic = basic;
+        __simplex.head = head;
+    } else {
+        let head = [], basic = [];
+        for (let i = 1; i <= __simplex.variables; i++){
+            head.push(i);
+        }
+        for (let i = 1; i <= __simplex.matrix.length; i++){
+            basic.push(head[head.length - 1] + i)
+        }
+        __simplex.head = head;
+        __simplex.basic = basic
     }
-    for (let i = 1; i <= __simplex.matrix.length; i++){
-        basic.push(head[head.length - 1] + i)
-    }
-    __simplex.head = head;
-    __simplex.basic = basic
 }
 
 `
@@ -83,12 +140,12 @@ function functionCalculator(simplex, functions){
     return {free: free_element, values: f};
 }
 
-function getAnswerArray(simplex){
+function getAnswerArray(simplex) {
     let array = [];
-    for (let i = 0; i < simplex.basic.length; i++){
+    for (let i = 0; i < simplex.basic.length; i++) {
         array[simplex.basic[i] - 1] = simplex.matrix[i][simplex.matrix[i].length - 1]
     }
-    for (let i = 0; i < simplex.head.length; i++){
+    for (let i = 0; i < simplex.head.length; i++) {
         array[simplex.head[i] - 1] = 0
     }
 

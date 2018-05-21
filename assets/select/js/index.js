@@ -1,17 +1,12 @@
+let graphEnable = false;
+
 $(document).ready(() => {
 
     let body = $('body');
+    let chips = $('.chips');
 
     let variables = parseInt(localStorage.getItem('variables'));
     let bounds = parseInt(localStorage.getItem('bounds'));
-
-    let close = $('#close');
-    let next = $('#next');
-
-    // Всплывающее окно
-    let elems = document.querySelectorAll('.modal');
-    M.Modal.init(elems);
-    let instance = M.Modal.getInstance(elems[0]);
 
     if (variables - bounds === 2){  // Если задачу удастся преобразовать к графической
         body.append(`
@@ -30,11 +25,7 @@ $(document).ready(() => {
             </div>
         </div>
         `);
-
-        $('#graph').on('click', () => {
-            // todo написать выбор базисных переменных
-            window.location.href = graphPage
-        });
+        graphEnable = true;
     }
 
     body.append(`
@@ -54,9 +45,13 @@ $(document).ready(() => {
     </div>
     `);
 
-    fill();
-    $('#simplex').on('click', () => {window.location.href = simplexPage});
+    for (let i = 1; i <= parseInt(localStorage.getItem('variables')); i++){
+        chips.append(`<div id="c_${i - 1}" class="chip center-margin">X<sub>${i}</sub></div>`);
+    }
 
+    $('.chip').on('click', simplexСhipClick);
+
+    fill();
     $('#save').on('click', saveEvent);
 
 });

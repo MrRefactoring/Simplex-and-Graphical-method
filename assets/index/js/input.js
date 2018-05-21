@@ -23,7 +23,7 @@ function matrixInput(){
     let matrix = [];
     for (let y = 0; y < parseInt(localStorage.getItem('bounds')); y++){
         matrix[y] = [];
-        for (let x = 0; x < parseInt(localStorage.getItem('variables')); x++){
+        for (let x = 0; x < parseInt(localStorage.getItem('variables')) + 1; x++){
             try {
                 matrix[y][x] = Fraction(eval($(`#m_${y}_${x}`).text())).valueOf()
             } catch (e) {
