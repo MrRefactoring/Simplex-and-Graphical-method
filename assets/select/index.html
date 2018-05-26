@@ -18,11 +18,15 @@
     <script src="../../libs/file_saver.js"></script>
 
     <script src="../../algorithms/gauss.js"></script>
+    <script src="../../algorithms/simplex.js"></script>
+
+    <script src="js/generators.js"></script>
 
     <script src="js/save.js"></script>
-    <script src="js/events.js"></script>
     <script src="js/index.js"></script>
-    <script src="js/modal.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/modalController.js"></script>
+
 
 </head>
 <body class="grey lighten-4">
@@ -39,7 +43,7 @@
                     <div class="switch">
                         <label>
                             Нет
-                            <input id="basic" type="checkbox">
+                            <input id="type" type="checkbox">
                             <span class="lever"></span>
                             Да
                         </label>
@@ -54,7 +58,7 @@
     </div>
     <div class="modal-footer">
         <a id="closeSimplex" class="modal-close waves-effect waves-green btn-flat">Закрыть</a>
-        <a id="nextSimplex" class="waves-effect waves-green btn-flat">Далее</a>
+        <a id="simplexNext" class="waves-effect waves-green btn-flat">Далее</a>
     </div>
 </div>
 

@@ -1,16 +1,17 @@
-class Gauss{
+class Gauss {
 
-    constructor(matrix, basic){
-        this.matrix = matrix;
-        this.basic = basic;
+    constructor(data){
+        this.matrix = $.extend(true, [], data.matrix);  // deep copy
+        this.basic = $.extend(true, [], data.basic);  // deep copy
         this.move = {};
     }
 
     lead(){
-        // Метод приводит систему к единичному виду и возвращает ее (если матрица вырожденная, то возвратит false)
-        let sorted = Gauss.__sort({matrix:this.matrix, basic:this.basic});
-        this.move = sorted['move'];
-        this.matrix = sorted['matrix'];
+        let sort = Gauss.sort({matrix: this.matrix, basic: this.basic});  // Сортируем матрицу
+        this.matrix = sort.matrix;
+        this.basic = sort.basic;
+        this.move = sort.move;
+        let shadow = sort.shadow;
 
         // Прямой ход
         for (let k = 1; k < this.matrix.length; k++){
@@ -31,102 +32,75 @@ class Gauss{
             }
         }
 
-        // Проверка матрицы на вырожденность
-        if (isNaN(this.matrix[0][0])){
-            return false;
+        // Проверка на вырожденность
+        let degeneracy = false;
+        for (let y = 0; y < this.matrix.length; y++){
+            for (let x = 0; x < this.matrix[y].length; x++){
+                if (isNaN(this.matrix[y][x])){
+                    degeneracy = true;
+                    break
+                }
+            }
         }
-        return this.matrix;  // Возвращаем матрицу
+        if (degeneracy){  // Если матрица вырождена
+            return {success: false, error: degeneracyMatrix}
+        }
 
+        return {
+            success: true,
+            matrix: this.matrix,
+            basic: this.basic,
+            shadow: shadow,
+            move: this.move,
+            //lines: matrixLines,
+            error: ''
+        }
     }
 
-    __divLine(lineIndex, divider){
+    __divLine(lineIndex, divider){  // Метод, который делит строку на делитель
         for (let x = 0; x < this.matrix[0].length; x++){
             this.matrix[lineIndex][x] = Fraction(this.matrix[lineIndex][x] / divider)
         }
     }
 
-    __subLine(from, to, multiplier=1){
+    __subLine(from, to, multiplier=1){  // Метод, который вычитает одну строку из другой
         for (let x = 0; x < this.matrix[0].length; x++){
             this.matrix[from][x] = Fraction(this.matrix[from][x] - this.matrix[to][x] * multiplier)
         }
     }
 
-    static simplexCheck(matrix, basic) {
-        // Метод реализует проверку на возможность использования симплекс метода с basic переменными
-        // Если можно, то возвращает [true, матрицу с коэффициентами]
-        // Если нельзя, потому что матрица вырожденная, то возвращает [false, degeneracy]
-        // Если нельзя, потому что отрицательные элементы, то возвращает [false, negative]
-        if (typeof matrix === 'string')
-            matrix = JSON.parse(matrix);
-        for (let y = 0; y < matrix.length; y++) {
-            for (let x = 0; x < matrix[y].length; x++) {
-                matrix[y][x] = Fraction(matrix[y][x])
-            }
-        }
-        let unit = new Gauss(matrix, basic).lead();  // Единичная матрица
-        if (unit === false)  // Если матрица получатся вырожденной
-            return [false, 'degeneracy'];  // Возвращаем информацию об этом
-        for (let y = 0; y < unit.length; y++){
-            if (unit[y][unit[y].length - 1] < 0){  // Если свободный член отрицательный
-                return [false, 'negative'];  // Возвращаем информацию об этом
-            }
-        }
+    static sort(data){
+        let matrix = data.matrix;
+        let basic = data.basic;
 
-        let result = [];  // Результирующая матрица
-        for (let y = 0; y < unit.length; y++){
-            let array = [];
-            for (let x = unit.length; x < unit[y].length; x++){
-                array.push(unit[y][x])
-            }
-            result.push(array)
-        }
+        let move = {};  // Словарь, в котором мы будем хранить перемещение базисных переменных
+        let shadowsNames = {};
 
-        return [true, result];  // Возвращаем матрицу с коэффициентами
-
-    }
-
-
-    static __sort(data){
-        // Метод производит сортировку матрицы
-        // Если basic != undefined, то производим прямую сортировку
-        // Если move != undefined, то производим обратную сортировку
-        let matrix = data['matrix'];
-        let basic = data['basic'];
-        let move = data['move'];
-
-        let movement = {};  // Тут храним историю пермещение
-        if (basic !== undefined){
-            basic.sort();  // Сортируем массив из базисных переменных
-            for (let i = 0; i < basic.length; i++){
-                if (basic[i] < matrix.length) continue;  // Если базисная перменная уже в начале (подходит нам)
-                for (let j = 0; j < matrix.length; j++){  // Пытаемся найти место в начале матрицы
-                    if (!basic.includes(j)) {  // Если место вакантно
-                        for (let y = 0; y < matrix.length; y++){  // Меняем столбцы в матрице местами
-                            let temp = matrix[y][basic[i]];
-                            matrix[y][basic[i]] = matrix[y][j];
-                            matrix[y][j] = temp;
-                        }
-                        movement[basic[i]] = j;  // Делаем запись о том, куда мы перенесли столбики
-                        basic.splice(basic[i], 1);  //Удаляем заменненый элемент из базисных переменных
-                        basic.push(j);  // Сортируем базисные переменные
-                        basic.sort();  // Сортируем базисные переменные
-                        break;  // Выходим из цикла и переходим к следующей базисной переменной
+        basic.sort();  //  Сортируем массив с базисными переменными
+        for (let i = 0; i < basic.length; i++){
+            if (basic[i] < basic.length) continue;  // Если базисную переменную не надо перемещать то пропускаем ее
+            for (let j = 0; j < basic.length; j++){
+                if (!basic.includes(j)){  // Если место вакантно, то есть на это место можно поставить базисную переменную
+                    for (let y = 0; y < matrix.length; y++){  // Меняем столбцы в матрице местами
+                        let temp = matrix[y][basic[i]];
+                        matrix[y][basic[i]] = matrix[y][j];
+                        matrix[y][j] = temp;
                     }
+                    move[basic[i]] = j;  // Делаем запись о том, куда переместили базисную переменную
+                    shadowsNames[i] = basic[i];
+                    basic.splice(i, 1);  // Удаляем старую переменную
+                    basic.push(j);  // Добавляем новую переменную
+                    basic.sort();  // Сортируем базисные переменные
+                    break  // Выходим из цикла и переходим к следущей базисной переменной
                 }
             }
-            return {matrix: matrix, move: movement}
         }
-        if (move !== undefined){
-            // Приводим матрицу к первозданному виду
-            for (let key in move){
-                for (let y = 0; y < matrix.length; y++){
-                    let temp = matrix[y][move[key]];
-                    matrix[y][move[key]] = matrix[y][key];
-                    matrix[y][key] = temp;
-                }
-            }
-            return {matrix: matrix}
+        for (let key in move){
+            basic[move[key]] = parseInt(key);
         }
+        console.log(move);
+        console.log(basic);
+        return {move: move, basic: basic, matrix: matrix, shadow: shadowsNames}
     }
 
 }

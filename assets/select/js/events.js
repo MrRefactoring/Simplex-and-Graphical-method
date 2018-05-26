@@ -1,62 +1,56 @@
-let basicArray = [];
+const bounds = parseInt(localStorage.getItem('bounds'));
+let basic = [];
 
-function simplexСhipClick() {
-    if ($('#basic').prop('checked')) return;  // Запрещаем добавлять, если поле не активное
+function simplexChipClick() {
+    if ($('#type').prop('checked')) return;  // Если выбран метод искусственного базиса, то запрещаем добавлять / удалять базисные перменные
     let self = $(this);
-    let id = parseInt(self.attr('id').split('_')[1]);
-    if (self.attr('class').split(' ').includes(interfaceColor)){  // Если мы отключаем эту переменную
-        if (basicArray.includes(id)){
-            basicArray.splice(basicArray.indexOf(id), 1);
-            self.toggleClass(interfaceColor)
-        } else
-            toast('Произошла внутренняя ошибка на сервере')
-    } else {  // Если подключаем эту перменную
-        if (basicArray.length < parseInt(localStorage.getItem('bounds'))){
-            self.toggleClass(interfaceColor);
-            basicArray.push(id)
+    let id = parseInt(self.attr('id').split('_')[1]);  // Получаем id нажатой кнопки
+    if (basic.includes(id)){   // Если переменная есть в базисных
+        basic.splice(basic.indexOf(id), 1);  // Удаляем ее оттуда
+        self.toggleClass(interfaceColor)  // Меняем цвет кнопки
+    } else {  // ЕСли переменной нет в списке базисных
+        if (basic.length < bounds){  //  Если можно еще добавить переменную в базисную
+            basic.push(id);  // Добавляем в список базисных перменных
+            self.toggleClass(interfaceColor)  // Меняем цвет кнопки
+        } else {  // Если нет места для переменной
+            toast(maxSelect)  // Говорим, что уже превышен лимит
+        }
+    }
+}
+
+function goToSimplex() {  // Метод для перехода к симплекс методу
+    if ($('#type').prop('checked')){  // Если выбран метод искусственного базиса
+        localStorage.setItem('type', 'artificial');  // Указываем, что хотим использовать метод искусственного базиса
+        window.location.href = simplexPage  // Переходим на страницу симплекс метода
+    } else {
+        if (basic.length < bounds){  // Если выбраны не все базисные переменные
+            toast(notAllSelected);  // Сообщаем, что не все базисные переменные выбраны
+            return;  // Выходим
+        }
+        let matrix = JSON.parse(localStorage.getItem('matrix'));  // Загружаем матрицу
+        for (let y = 0; y < matrix.length; y++)
+            for (let x = 0; x < matrix[y].length; x++)
+                matrix[y][x] = Fraction(matrix[y][x]);
+        basic.sort();  // Сортируем список базисных переменных
+        let check = Simplex.check({matrix: matrix, basic: basic});  // Делаем проверку. Подоходят ли эти переменные для симплекс метода или нет
+        if (check.success){  // Если переменные подходят
+            localStorage.setItem('type', 'forward');  // Задаем, что хотим использовать прямой симплекс метод
+            localStorage.setItem('basic', JSON.stringify(basic));  // Сохраняем базисные переменные
+            window.location.href = simplexPage;  // Перенаправляем на страницу симплекс метода
         } else {
-            toast('Вы уже выбрали максиамльное количество базисных перменных')
+            toast(check.error)  // Сообщаем об ошибке
         }
     }
 }
 
 function openSimplexModal() {  // Открывает модальное окно
-    let elems = document.querySelectorAll('#simplexModal');
-    M.Modal.init(elems);
-    M.Modal.getInstance(elems[0]).open();
+    let elements = document.querySelectorAll('#simplexModal');
+    M.Modal.init(elements);
+    M.Modal.getInstance(elements[0]).open();
 }
 
 function openGraphModal() {
-    let elems = document.querySelectorAll('#graphModal');
-    M.Modal.init(elems);
-    M.Modal.getInstance(elems[0]).open();
-}
-
-function nextSimplexModal() {
-    if ($('#basic').prop('checked')){  // Если выбран метод искусственного базиса
-        localStorage.setItem('type', 'artificial');  // Указываем, что хотим использовать метод искусственного базиса
-        window.location.href = simplexPage;  // Перебрасываем на страницу с симплекс методом
-    } else {
-        // Готово todo сделать кучу проверок
-        // Готово todo проверка на кол-во выбранных переменных
-        // Готово todo проверка на метод гаусса
-        // Готово todo если метод гаусса с выбранными переменными дает нам ситуацию, когда
-        // Готово todo свободный член < 0, то toast что что-то такие-себе переменные
-        if (basicArray.length !== parseInt(localStorage.getItem('bounds'))){
-            toast('Выберите все базисиные переменные');
-            return;  // Выходим
-        }
-
-        let check = Gauss.simplexCheck(localStorage.getItem('matrix'), basicArray);
-        if (check[0]){  // Если такие базисные переменные подходят
-            localStorage.setItem('type', 'forward');  // Указываем, что хотим использовать прямой метод гаусса
-            localStorage.setItem('forward', JSON.stringify(basicArray));  // Сохраняем базисные переменные
-            window.location.href = simplexPage;
-        } else if (check[1] === 'negative') {  // Если такие базисные переменные не подходят
-            toast('Выбранные базисные перменные невозможно использовать для simplex-метода')
-        } else if (check[1] === 'degeneracy'){  // Если получается вырожденная матрица
-            toast('При таких базисных перменных получается вырожденный случай, выберите другие базисные перменные')
-        }
-
-    }
+    let elements = document.querySelectorAll('#graphModal');
+    M.Modal.init(elements);
+    M.Modal.getInstance(elements[0]).open();
 }
