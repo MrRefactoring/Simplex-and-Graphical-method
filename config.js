@@ -44,3 +44,20 @@ const negativeElement = 'Выбранные базисные перменные 
 const resolved = 'Решение найдено';
 const incompatible = 'Система линейных ограничений несовместна';
 const solutionNotExist = 'Решения не существует!';
+
+let options = {  // Настройки для chart
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero:true,
+                stepSize: 1
+            }
+        }],
+        xAxes: [{
+            ticks: {
+                beginAtZero:true,
+                stepSize: 100
+            }
+        }]
+    }
+};

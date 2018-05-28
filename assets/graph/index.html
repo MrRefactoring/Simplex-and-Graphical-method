@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Линейное программирование. Графический метод</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
+    <script src="https://unpkg.com/d3@3/d3.min.js"></script>
+    <script src="libs/chart.js"></script>
+
+    <script src="../../libs/fraction.js"></script>
+
+    <script src="../../config.js"></script>
+    <script src="../../libs/file_saver.js"></script>
+    <script src="../simplex/js/save.js"></script>
+
+    <script src="../simplex/js/init/common.js"></script>
+    <script src="../simplex/js/init/forward.js"></script>
+    <script src="../simplex/js/init/parser.js"></script>
+
+    <script src="../../algorithms/gauss.js"></script>
+    <script src="../../algorithms/simplex.js"></script>
+
+    <script src="js/gauss.js"></script>
+
+    <script src="js/lines.js"></script>
+    <script src="js/draw.js"></script>
+
+    <script src="js/index.js"></script>
+
+</head>
+<body class="grey lighten-4">
+
+    <div class="row absolute">
+        <div class="col s12 card white">
+            <div class="title">
+                <span>Ответ:</span>
+            </div>
+            <div class="center">
+                <div style="width: 100%;">
+                    <div class="text-center">
+                        <span>F(<span style="text-decoration: overline">X</span>) = <span id="finalAnswer"></span></span>
+                    </div>
+                    <div class="text-center">
+                        <span><span style="text-decoration: overline">X</span> = (<span id="finalArray"></span>)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row max-height">
+        <div class="col s12 max-height center">
+            <div class="white card layout">
+                <span id="layout"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed-action-btn">
+        <a id="reload" class="btn-floating btn-large waves-effect waves-light color">
+            <i class="large material-icons">refresh</i>
+        </a>
+        <a id="save" class="btn-floating btn-large waves-effect waves-light color">
+            <i class="large material-icons">save</i>
+        </a>
+    </div>
+
+</body>
+</html>

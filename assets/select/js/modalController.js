@@ -4,6 +4,7 @@ $(document).ready(() => {
     let simplexChips = $('#simplexChips');
 
     let simplexNext = $('#simplexNext');
+    let graphNext = $('#graphNext');
 
     function changeEvent() {
         if (this.checked){
@@ -16,9 +17,10 @@ $(document).ready(() => {
 
     type.on('change', changeEvent);
     simplexNext.on('click', goToSimplex);
+    graphNext.on('click', goToGraph);
 
     $('#simplex').on('click', openSimplexModal);
     if (graphEnable)
-        $('#graph').on('click', openGraphModal)
+        $('#graph').on('click', openGraphModal);
 
 });

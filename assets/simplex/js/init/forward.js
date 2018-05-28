@@ -65,7 +65,6 @@ class Forward extends Common{
             functions.push(f);
         }
         let values = table.calcCoefficients({table: table, functions: functions});  // Получем коэффициенты
-        console.log(values);
         for (let i = 0; i < table.head.length; i++)
             table.footer[i] = values.values[table.head[i] - 1];
         table.footer[table.footer.length] = values.free.neg();

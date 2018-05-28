@@ -79,6 +79,7 @@ class Simplex {
             }
         }
 
+        console.log(newTable);
 
         return newTable;
     }

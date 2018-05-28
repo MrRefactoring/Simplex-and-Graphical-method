@@ -31,5 +31,6 @@ $(document).ready(() => {
     fill();
 
     $('#save').on('click', saveEvent);
+    $('#reload').on('click', () => {window.location.replace('/index.html')});
 
 });

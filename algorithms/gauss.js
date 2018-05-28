@@ -98,8 +98,6 @@ class Gauss {
         for (let key in move){
             basic[move[key]] = parseInt(key);
         }
-        console.log(move);
-        console.log(basic);
         return {move: move, basic: basic, matrix: matrix, shadow: shadowsNames}
     }
 
