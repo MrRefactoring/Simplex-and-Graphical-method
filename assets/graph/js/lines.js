@@ -44,7 +44,12 @@ class Lines{
                 let value = (line[2].mul(line[0])).div(line[1]);  // Значение ф-и в точке (0, 0)
 
                 if (value.compare(0) === 0){  // Если график пересекает эту точку
-
+                    value = (line[0].sub(line[2]));
+                    let y = line[2].sub(line[0]).div(line[1]);
+                    if (y.compare(0) > 0)  // Если график выше, чем точка
+                        closed = 'bottom';
+                    else
+                        closed = 'top'
                 } else {  // Если график не проходит через эту точку
                     if (line[1].compare(0) > 0)  // Если график выше оси абсцисс
                         closed = 'bottom';
