@@ -35,7 +35,7 @@ class Simplex {
         }
 
         // Пересчитываем подвал
-        newTable.footer[pivot[1]] = Fraction(table.footer[pivot[1]] * -table.matrix[pivot[0]][pivot[1]]);
+        newTable.footer[pivot[1]] = Fraction(table.footer[pivot[1]] * -newTable.matrix[pivot[0]][pivot[1]]);  // Пересчет подвала над опорным элементом
         for (let x = 0; x < newTable.footer.length; x++){
             if (x === pivot[1]) continue;
             let m = [
@@ -78,8 +78,6 @@ class Simplex {
                 }
             }
         }
-
-        console.log(newTable);
 
         return newTable;
     }

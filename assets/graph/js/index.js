@@ -20,7 +20,7 @@ $(document).ready(() => {
 
     $('#finalAnswer').text(answer.function);
     $('#finalArray').text(answer.vector);
-    $('.absolute').css('opacity', 1);
+    $('.absolute').css('opacity', .95);
 
     $(this).on('resize', function () {
         window.location.reload();  // Перезагружаем страницу, если ее размер поменялся

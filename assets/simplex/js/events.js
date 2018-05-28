@@ -10,7 +10,7 @@ function nextEvent() {
 
     if (table.status !== 'unresolved'){  // Если система вышла из нерешенной
         switch (table.status){
-            case ('solved'):{
+            case ('resolved'):{
                 toast(resolved);
                 break
             }

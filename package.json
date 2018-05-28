@@ -1,13 +1,12 @@
 {
   "name": "Линейное программирование",
-  "version": "0.3.1",
+  "version": "0.3.4",
   "main": "index.html",
   "window": {
-    "icon": "content/icon.png",
-    "width": 800,
-    "height": 500,
-    "min_width": 800,
-    "min_height": 500,
+    "width": 1280,
+    "height": 720,
+    "min_width": 1280,
+    "min_height": 720,
     "frame": true,
     "toolbar": true
   }

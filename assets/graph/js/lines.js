@@ -1,9 +1,14 @@
+function fractionToNumber(fraction) {  // Преобразует fraction в numbers
+    return fraction.s * fraction.n / fraction.d
+}
+
 class Lines{
 
     static getData(data){
 
         let matrix = data.table.matrix;
         let point = data.point;
+
         data = [];
 
         // todo top and bottom
@@ -11,7 +16,7 @@ class Lines{
         for (let line of matrix){
             if (line[0].n === 0){  // Если x == 0 (Горизонтальная прямая)
                 let y = line[2].div(line[1]);  // Находим константу по y
-                y = y.s * y.n / y.d;  // Переводим из fraction в number
+                y = fractionToNumber(y);  // Переводим из fraction в number
 
                 data.push({
                     fn: `y - ${y}`,
@@ -21,19 +26,20 @@ class Lines{
                 });
             } else if (line[1].n === 0){  // Если y == 0
                 let x = line[2].div(line[0]);  // Находим константу по x
-                x = x.s * x.n / x.d;  // Переводим из fraction в number
+                x = fractionToNumber(x);  // Переводим из fraction в number
                 data.push({
                     fn: x >= 0 ? `x - ${Math.abs(x)}`: `x + ${Math.abs(x)}`,
                     fnType: 'implicit',
                     count: matrix.length + 1
                 });
             } else {  // Если уравнение имеет обычную форму
-                let formula = `(${line[2]} - x * ${line[0]}) / ${line[1]}`;
 
+                let r = fractionToNumber(line[2]);  // Преобразуем fraction type to number type
+                let y = fractionToNumber(line[1]);  // Преобразуем fraction type to number type
+                let x = fractionToNumber(line[0]);  // Преобразуем fraction type to number type
+
+                let formula = `(${r} - x * ${x}) / ${y}`;
                 let closed;
-
-                // if x > 0 then график в правой части else график в левой части
-                // if y > 0 then график выше оси абсцисс else график ниже оси абсцисс
 
                 let value = (line[2].mul(line[0])).div(line[1]);  // Значение ф-и в точке (0, 0)
 
